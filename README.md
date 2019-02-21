@@ -11,5 +11,17 @@
 
 # Configure Spark
 
-1. set environment variable SPARK_SSH_FOREGROUND to let it explicitly ask for the SSH password
+1. Set environment variable SPARK_SSH_FOREGROUND to let it explicitly ask for the SSH password
+2. Uncomment this line "192.168.0.107  ncku_intelligent_energy_7" in /etc/hosts
 
+## Test one master + one slave hosted by the same machine
+1. Make sure there is no file named "slaves" in /usr/local/spark/conf
+2. In /usr/local/spark, run "sbin/start-all.sh"
+3. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount ./LICENSE"
+
+## Test one master by one machine + two slaves by the other two machines
+1. Put the following lines in /usr/local/spark/conf/slaves:
+     192.168.0.107
+     192.168.0.106
+     192.168.0.108
+2 & 3: (same as the previous section)
