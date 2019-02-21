@@ -24,4 +24,7 @@
      192.168.0.107
      192.168.0.106
      192.168.0.108
-2 & 3: (same as the previous section)
+2. (same as the previous section)
+3. (same as the previous section)
+4. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example SparkPi 10000"
+   (it will take about 96 seconds to finish)
