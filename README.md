@@ -17,7 +17,7 @@
 ## Test one master + one slave hosted by the same machine
 1. Make sure there is no file named "slaves" in /usr/local/spark/conf
 2. In /usr/local/spark, run "sbin/start-all.sh"
-3. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount ./LICENSE"
+3. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount /usr/local/spark/LICENSE"
 
 ## Test one master by one machine + two slaves by the other two machines
 1. Put the following lines in /usr/local/spark/conf/slaves:
@@ -28,3 +28,5 @@
 3. (same as the previous section)
 4. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example SparkPi 10000"
    (it will take about 96 seconds to finish)
+5. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount [FilePath]"
+   (FilePath can be a local file which should exist on all nodes or an hdfs URL)
