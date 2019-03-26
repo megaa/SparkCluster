@@ -6,6 +6,9 @@
 3. sudo apt-get update
 4. apt-cache search openjdk (check if openjdk-8-jdk is in the list)
 5. sudo apt-get install openjdk-8-jdk
+6. Set JAVA_HOME: add the line `JAVA_HOME="/usr"` in /etc/environment
+
+# Install Hadoop
 
 # Install Spark
 
