@@ -1,7 +1,6 @@
 # Install Java (OpenJDK 1.8)
 
-1. sudo vi /etc/apt/sources.list, add the line:
-     deb http://security.ubuntu.com/ubuntu bionic-security main universe
+1. sudo vi /etc/apt/sources.list, add the line: `deb http://security.ubuntu.com/ubuntu bionic-security main universe`
 2. sudo add-apt-repository ppa:openjdk-r/ppa
 3. sudo apt-get update
 4. apt-cache search openjdk (check if openjdk-8-jdk is in the list)
@@ -9,6 +8,88 @@
 6. Set JAVA_HOME: add the line `JAVA_HOME="/usr"` in /etc/environment
 
 # Install Hadoop
+
+*Do the following for all machines*
+1. Extract hadoop-2.9.2.tar.gz under /home/megaa/stuff
+2. Put the following content in /etc/profile.d/hadoop.sh
+```
+HADOOP_PREFIX=/home/megaa/stuff/hadoop-2.9.2
+export HADOOP_PREFIX
+```
+3. etc/hadoop/core-site.xml
+```
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://192.168.0.103:9000</value>
+    </property>
+</configuration>
+```
+4. etc/hadoop/hdfs-site.xml
+```
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    
+    <property>
+	<name>dfs.namenode.name.dir</name>
+	<value>/home/megaa/hadoop/data/namenode</value>
+    </property>
+
+    <property>
+	<name>dfs.datanode.data.dir</name>
+	<value>/home/megaa/hadoop/data/datanode</value>
+    </property>
+</configuration>
+```
+5. etc/hadoop/yarn-site.xml
+```
+<configuration>
+    <property>
+        <description>The hostname of the RM.</description>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>192.168.0.103</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+</configuration>
+```
+6. etc/hadoop/hadoop-env.sh
+```
+export JAVA_HOME="/usr"
+```
+7. Setup passphraseless SSH (refer to http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html), make sure you can ssh to each other without passphrase for all machines
+8. etc/hadoop/slaves (only on the master machine)
+```
+192.168.0.104
+```
+9. On master machine, mkdir -p /home/megaa/hadoop/data/namenode
+10. On slave machines, mkdir -p /home/megaa/hadoop/data/datanode
+11. Format the HDFS volume: on master machine, /home/megaa/stuff/hadoop-2.9.2, run
+```
+bin/hdfs namenode -format
+```
+
+# Run Hadoop
+On master machine (192.168.0.1.3), /home/megaa/stuff/hadoop-2.9.2, run the following
+1. sbin/start-dfs.sh
+2. sbin/start-yarn.sh
+
+Then, use jps to check if the following processes are on the master
+```
+NameNode
+ResourceManager
+SecondaryNameNode
+```
+and the following processes are on the slaves
+```
+DataNode
+NodeManager
+```
 
 # Install Spark
 
@@ -33,3 +114,10 @@
    (it will take about 96 seconds to finish)
 5. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount [FilePath]"
    (FilePath can be a local file which should exist on all nodes or an hdfs URL)
+
+## Test submitting to YARN
+1. export YARN_CONF_DIR=/home/megaa/stuff/hadoop-2.9.2/etc/hadoop
+2. In /usr/local/spark, run
+```
+bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --driver-memory 4g --executor-memory 2g --executor-cores 1 --queue default examples/jars/spark-examples*.jar 10
+```
