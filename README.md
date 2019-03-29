@@ -91,6 +91,14 @@ DataNode
 NodeManager
 ```
 
+## Note:
+
+Take care of scheduler v.s nodemanager memory/vcore setting!!! They must exist on separate yarn-site.xml!!!
+```
+Scheduler(@master) yarn.scheduler.maximum-allocation-mb 
+Nodemanager(@slaves) yarn.nodemanager.resource.memory-mb
+```
+
 # Install Spark
 
 # Configure Spark
@@ -117,7 +125,16 @@ NodeManager
 
 ## Test submitting to YARN
 1. export YARN_CONF_DIR=/home/megaa/stuff/hadoop-2.9.2/etc/hadoop
-2. In /usr/local/spark, run
+2. Run
 ```
-bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --driver-memory 4g --executor-memory 2g --executor-cores 1 --queue default examples/jars/spark-examples*.jar 10
+spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --driver-memory 4g --executor-memory 2g --executor-cores 1 --queue default examples/jars/spark-examples*.jar 10
+spark-submit --master yarn --deploy-mode cluster --driver-memory 8g --executor-memory 1g --executor-cores 1 ~/test/spark/python/tit.py
+```
+### Note:
+It is suggested that `--executor-memory` should be at least 1g
+
+## YARN debug utility
+In /home/megaa/stuff/hadoop-2.9.2,
+```
+bin/yarn jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.jar -jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.jar -shell_command python -shell_args -V
 ```
