@@ -125,7 +125,7 @@ Nodemanager(@slaves) yarn.nodemanager.resource.memory-mb
    (FilePath can be a local file which should exist on all nodes or an hdfs URL)
 
 ## Test submitting to YARN
-1. export YARN_CONF_DIR=/home/megaa/stuff/hadoop-2.9.2/etc/hadoop
+1. export HADOOP_CONF_DIR=/home/megaa/stuff/hadoop-2.9.2/etc/hadoop
 2. Run
 ```
 spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --driver-memory 4g --executor-memory 2g --executor-cores 1 --queue default examples/jars/spark-examples*.jar 10
