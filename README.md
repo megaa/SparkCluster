@@ -139,3 +139,11 @@ In /home/megaa/stuff/hadoop-2.9.2,
 ```
 bin/yarn jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.jar -jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.jar -shell_command python -shell_args -V
 ```
+
+## Prevent Spark from uploading resource files for each submission
+1. Create the spark jar files: `jar cv0f spark-libs-2.4.0.jar -C /usr/local/spark/jars/ .`
+2. Put it to HDFS: `hdfs dfs -put spark-libs-2.4.0.jar /spark`
+3. Set the replication count: `hdfs dfs -setrep -w 2 /spark/spark-libs-2.4.0.jar`
+4. Do 2 & 3 for py4j-0.10.7-src.zip and pyspark.zip
+5. In Spark conf/spark-defaults.conf, add the line `spark.yarn.archive hdfs://192.168.0.103:9000/spark/spark-libs-2.4.0.jar`
+6. When submitting, add the option `--files hdfs://192.168.0.103:9000/spark/pyspark.zip,hdfs://192.168.0.103:9000/spark/py4j-0.10.7-src.zip`
