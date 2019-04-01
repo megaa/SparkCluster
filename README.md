@@ -9,7 +9,7 @@
 
 # Install Hadoop
 
-*Do the following for all machines*
+*Do the following for all machines unless explicitly stated*
 1. Extract hadoop-2.9.2.tar.gz under /home/megaa/stuff
 2. Put the following content in /etc/profile.d/hadoop.sh
 ```
@@ -66,8 +66,9 @@ export JAVA_HOME="/usr"
 8. etc/hadoop/slaves (only on the master machine)
 ```
 192.168.0.104
+192.168.0.105
 ```
-9. On master machine, mkdir -p /home/megaa/hadoop/data/namenode
+9. On master machine (192.168.0.103), mkdir -p /home/megaa/hadoop/data/namenode
 10. On slave machines, mkdir -p /home/megaa/hadoop/data/datanode
 11. Format the HDFS volume: on master machine, /home/megaa/stuff/hadoop-2.9.2, run
 ```
@@ -93,7 +94,7 @@ NodeManager
 
 ## Note:
 
-Take care of scheduler v.s nodemanager memory/vcore setting!!! They must exist on separate yarn-site.xml!!!
+Take care of scheduler v.s nodemanager memory/vcore setting!!! They must exist in separate yarn-site.xml!!!
 ```
 Scheduler(@master) yarn.scheduler.maximum-allocation-mb 
 Nodemanager(@slaves) yarn.nodemanager.resource.memory-mb
