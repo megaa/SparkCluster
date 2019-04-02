@@ -68,6 +68,14 @@ export JAVA_HOME="/usr"
 192.168.0.104
 192.168.0.105
 ```
+or
+```
+192.168.0.103
+192.168.0.104
+192.168.0.105
+```
+for 3 slaves configuration
+
 9. On master machine (192.168.0.103), mkdir -p /home/megaa/hadoop/data/namenode
 10. On slave machines, mkdir -p /home/megaa/hadoop/data/datanode
 11. Format the HDFS volume: on master machine, /home/megaa/stuff/hadoop-2.9.2, run
@@ -132,7 +140,8 @@ spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mo
 spark-submit --master yarn --deploy-mode cluster --driver-memory 8g --executor-memory 1g --executor-cores 1 ~/test/spark/python/tit.py
 ```
 ### Note:
-It is suggested that `--executor-memory` should be at least 1g
+1. It is suggested that `--executor-memory` should be at least 1g
+2. Add `--num-executors` to specify the number of executors to be allocated
 
 ## YARN debug utility
 In /home/megaa/stuff/hadoop-2.9.2,
