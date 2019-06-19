@@ -1,4 +1,4 @@
-# Install Java (OpenJDK 1.8)
+# 1. Install Java (OpenJDK 1.8)
 
 1. sudo vi /etc/apt/sources.list, add the line: `deb http://security.ubuntu.com/ubuntu bionic-security main universe`
 2. sudo add-apt-repository ppa:openjdk-r/ppa
@@ -7,7 +7,7 @@
 5. sudo apt-get install openjdk-8-jdk
 6. Set JAVA_HOME: add the line `JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"` in /etc/environment
 
-# Install Hadoop
+# 2. Install Hadoop
 
 *Do the following for all machines unless explicitly stated*
 1. Extract hadoop-2.9.2.tar.gz under /home/megaa/stuff
@@ -83,7 +83,7 @@ for 3 slaves configuration
 bin/hdfs namenode -format
 ```
 
-# Run Hadoop
+# 3. Run Hadoop
 On master machine (192.168.0.1.3), /home/megaa/stuff/hadoop-2.9.2, run the following
 1. sbin/start-dfs.sh
 2. sbin/start-yarn.sh
@@ -108,38 +108,40 @@ Scheduler(@master) yarn.scheduler.maximum-allocation-mb
 Nodemanager(@slaves) yarn.nodemanager.resource.memory-mb
 ```
 
-# Install Spark
+# 4. Install Spark
 
-# Configure Spark as standalone cluster
+# 5. Configure Spark as standalone cluster
 
 1. Set environment variable `SPARK_SSH_FOREGROUND` to let it explicitly ask for the SSH password
-2. Make sure your hostname is valid (e.g not containing the `_` character), otherwise uncomment lines like `192.168.0.107  ncku_intelligent_energy_7` in `/etc/hosts`
+2. Make sure your hostname is valid (e.g not containing the `_` character), otherwise comment out lines like `192.168.0.107  ncku_intelligent_energy_7` in `/etc/hosts`
 
-## Test one master + one slave hosted by the same machine
+## 5.1 Test one master + one slave hosted by the same machine
 1. Make sure there is no file named `slaves` in `/usr/local/spark/conf`
 2. In `/usr/local/spark`, run `sbin/start-all.sh`
 3. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount /usr/local/spark/LICENSE`
 
-## Test one master by one machine + two slaves by the other two machines
+## 5.2 Test one master by one machine + two slaves by the other two machines
 1. Put the following lines in `/usr/local/spark/conf/slaves`:
-     192.168.0.107
-     192.168.0.106
-     192.168.0.108
-2. (same as the previous section)
-3. (same as the previous section)
+```
+192.168.0.107
+192.168.0.106
+192.168.0.108
+```
+2. (same as 5.1.2)
+3. (same as 5.1.3)
 4. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example SparkPi 10000`
    (it will take about 96 seconds to finish)
 5. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount [FilePath]`
    (`FilePath` can be a local file which should exist on all nodes or an HDFS URL)
 
-## Test submitting to YARN
+# 6. Submitting to YARN
 1. `export HADOOP_CONF_DIR=/home/megaa/stuff/hadoop-2.9.2/etc/hadoop`
 2. Run
 ```
 spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --driver-memory 4g --executor-memory 2g --executor-cores 1 --queue default examples/jars/spark-examples*.jar 10
 spark-submit --master yarn --deploy-mode cluster --driver-memory 8g --executor-memory 1g --executor-cores 1 ~/test/spark/python/tit.py
 ```
-### Note:
+## Note:
 1. It is suggested that `--executor-memory` should be at least 1g
 2. Add `--num-executors` to specify the number of executors to be allocated
 
@@ -157,7 +159,8 @@ bin/yarn jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.j
 5. In `Spark conf/spark-defaults.conf`, add the line `spark.yarn.archive hdfs://192.168.0.103:9000/spark/spark-libs-2.4.0.jar`
 6. When submitting, add the option `--files hdfs://192.168.0.103:9000/spark/pyspark.zip,hdfs://192.168.0.103:9000/spark/py4j-0.10.7-src.zip`
 
-# Miscellaneous Items
+# 7. Miscellaneous Items
+
 ## Mount HDFS as a local filesystem (via Fuse)
 1. Download Hadoop source file and extract it (`hadoop-2.9.2-src.tar.gz`)
 2. Edit `hadoop-2.9.2-src/dev-support/docker/Dockerfile`, comment out the lines related to Node.js (#141~#145)
