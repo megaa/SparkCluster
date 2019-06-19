@@ -110,30 +110,30 @@ Nodemanager(@slaves) yarn.nodemanager.resource.memory-mb
 
 # Install Spark
 
-# Configure Spark
+# Configure Spark as standalone cluster
 
-1. Set environment variable SPARK_SSH_FOREGROUND to let it explicitly ask for the SSH password
-2. Uncomment this line "192.168.0.107  ncku_intelligent_energy_7" in /etc/hosts
+1. Set environment variable `SPARK_SSH_FOREGROUND` to let it explicitly ask for the SSH password
+2. Make sure your hostname is valid (e.g not containing the `_` character), otherwise uncomment lines like `192.168.0.107  ncku_intelligent_energy_7` in `/etc/hosts`
 
 ## Test one master + one slave hosted by the same machine
-1. Make sure there is no file named "slaves" in /usr/local/spark/conf
-2. In /usr/local/spark, run "sbin/start-all.sh"
-3. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount /usr/local/spark/LICENSE"
+1. Make sure there is no file named `slaves` in `/usr/local/spark/conf`
+2. In `/usr/local/spark`, run `sbin/start-all.sh`
+3. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount /usr/local/spark/LICENSE`
 
 ## Test one master by one machine + two slaves by the other two machines
-1. Put the following lines in /usr/local/spark/conf/slaves:
+1. Put the following lines in `/usr/local/spark/conf/slaves`:
      192.168.0.107
      192.168.0.106
      192.168.0.108
 2. (same as the previous section)
 3. (same as the previous section)
-4. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example SparkPi 10000"
+4. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example SparkPi 10000`
    (it will take about 96 seconds to finish)
-5. In /usr/local/spark, run "MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount [FilePath]"
-   (FilePath can be a local file which should exist on all nodes or an hdfs URL)
+5. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount [FilePath]`
+   (`FilePath` can be a local file which should exist on all nodes or an HDFS URL)
 
 ## Test submitting to YARN
-1. export HADOOP_CONF_DIR=/home/megaa/stuff/hadoop-2.9.2/etc/hadoop
+1. `export HADOOP_CONF_DIR=/home/megaa/stuff/hadoop-2.9.2/etc/hadoop`
 2. Run
 ```
 spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --driver-memory 4g --executor-memory 2g --executor-cores 1 --queue default examples/jars/spark-examples*.jar 10
@@ -144,7 +144,7 @@ spark-submit --master yarn --deploy-mode cluster --driver-memory 8g --executor-m
 2. Add `--num-executors` to specify the number of executors to be allocated
 
 ## YARN debug utility
-In /home/megaa/stuff/hadoop-2.9.2,
+In `/home/megaa/stuff/hadoop-2.9.2`,
 ```
 bin/yarn jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.jar -jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.jar -shell_command python -shell_args -V
 ```
@@ -153,8 +153,8 @@ bin/yarn jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.j
 1. Create the spark jar files: `jar cv0f spark-libs-2.4.0.jar -C /usr/local/spark/jars/ .`
 2. Put it to HDFS: `hdfs dfs -put spark-libs-2.4.0.jar /spark`
 3. Set the replication count: `hdfs dfs -setrep -w 2 /spark/spark-libs-2.4.0.jar`
-4. Do 2 & 3 for py4j-0.10.7-src.zip and pyspark.zip
-5. In Spark conf/spark-defaults.conf, add the line `spark.yarn.archive hdfs://192.168.0.103:9000/spark/spark-libs-2.4.0.jar`
+4. Do 2 & 3 for `py4j-0.10.7-src.zip` and `pyspark.zip`
+5. In `Spark conf/spark-defaults.conf`, add the line `spark.yarn.archive hdfs://192.168.0.103:9000/spark/spark-libs-2.4.0.jar`
 6. When submitting, add the option `--files hdfs://192.168.0.103:9000/spark/pyspark.zip,hdfs://192.168.0.103:9000/spark/py4j-0.10.7-src.zip`
 
 # Miscellaneous Items
