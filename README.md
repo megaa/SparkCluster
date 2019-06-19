@@ -5,7 +5,7 @@
 3. sudo apt-get update
 4. apt-cache search openjdk (check if openjdk-8-jdk is in the list)
 5. sudo apt-get install openjdk-8-jdk
-6. Set JAVA_HOME: add the line `JAVA_HOME="/usr"` in /etc/environment
+6. Set JAVA_HOME: add the line `JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"` in /etc/environment
 
 # Install Hadoop
 
@@ -156,3 +156,21 @@ bin/yarn jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.j
 4. Do 2 & 3 for py4j-0.10.7-src.zip and pyspark.zip
 5. In Spark conf/spark-defaults.conf, add the line `spark.yarn.archive hdfs://192.168.0.103:9000/spark/spark-libs-2.4.0.jar`
 6. When submitting, add the option `--files hdfs://192.168.0.103:9000/spark/pyspark.zip,hdfs://192.168.0.103:9000/spark/py4j-0.10.7-src.zip`
+
+# Miscellaneous Items
+## Mount HDFS as a local filesystem (via Fuse)
+1. Download Hadoop source file and extract it (`hadoop-2.9.2-src.tar.gz`)
+2. Edit `hadoop-2.9.2-src/dev-support/docker/Dockerfile`, comment out the lines related to Node.js (#141~#145)
+3. Edit `hadoop-2.9.2-src/start-build-env.sh`, change `${USER_NAME}` to `root` in line #49
+4. Install docker and start the service
+5. In `hadoop-2.9.2-src/`, run `sudo ./start-build-env.sh`
+6. In the docker environment, unlink `/usr/bin/mvn` and create another one linking to `/opt/maven/bin/mvn`
+7. Build the Hadoop source by `mvn clean package -Pdist,native -DskipTests`
+8. Copy `hadoop-2.9.2-src/hadoop-hdfs-project/hadoop-hdfs-native-client/target/main/native/fuse-dfs/fuse_dfs` and `hadoop-2.9.2-src/hadoop-hdfs-project/hadoop-hdfs-native-client/src/main/native/fuse-dfs/fuse_dfs_wrapper.sh` to the `sbin/` of your Hadoop installation
+9. Edit `fuse_dfs_wrapper.sh`, change the following lines:
+```
+export FUSEDFS_PATH="$HADOOP_PREFIX/sbin"
+export LIBHDFS_PATH="$HADOOP_PREFIX/lib/native"
+done < <(find "$HADOOP_PREFIX/share/hadoop" -name "*.jar" -print0)
+```
+10. Mount HDFS by `$HADOOP_PREFIX/sbin/fuse_dfs_wrapper.sh dfs://host:port /mnt/hdfs` as root (be sure to set `$HADOOP_PREFIX` and `$JAVA_HOME` first)
