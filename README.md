@@ -58,12 +58,24 @@ export HADOOP_PREFIX
     </property>
 </configuration>
 ```
-6. Edit `etc/hadoop/hadoop-env.sh`:
+6. Edit `etc/hadoop/capacity-scheduler.xml` (only on the master machine):
+```
+  <property>
+    <name>yarn.scheduler.capacity.maximum-am-resource-percent</name>
+    <value>0.7</value>
+    <description>
+      Maximum percent of resources in the cluster which can be used to run
+      application masters i.e. controls number of concurrent running
+      applications.
+    </description>
+  </property>
+```
+7. Edit `etc/hadoop/hadoop-env.sh`:
 ```
 export JAVA_HOME="/usr"
 ```
-7. Setup passphraseless SSH (refer to http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html), make sure you can ssh to each other without passphrase for all machines
-8. Edit `etc/hadoop/slaves` (only on the master machine):
+8. Setup passphraseless SSH (refer to http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html), make sure you can ssh to each other without passphrase for all machines
+9. Edit `etc/hadoop/slaves` (only on the master machine):
 ```
 192.168.0.104
 192.168.0.105
@@ -76,9 +88,9 @@ or
 ```
 for 3 slaves configuration
 
-9. On master machine (192.168.0.103), `mkdir -p /home/megaa/hadoop/data/namenode`
-10. On slave machines, `mkdir -p /home/megaa/hadoop/data/datanode`
-11. Format the HDFS volume: on master machine, `/home/megaa/stuff/hadoop-2.9.2`, run
+10. On master machine (192.168.0.103), `mkdir -p /home/megaa/hadoop/data/namenode`
+11. On slave machines, `mkdir -p /home/megaa/hadoop/data/datanode`
+12. Format the HDFS volume: on master machine, `/home/megaa/stuff/hadoop-2.9.2`, run
 ```
 bin/hdfs namenode -format
 ```
@@ -107,6 +119,7 @@ Take care of scheduler v.s nodemanager memory/vcore setting!!! They must exist i
 Scheduler(@master) yarn.scheduler.maximum-allocation-mb 
 Nodemanager(@slaves) yarn.nodemanager.resource.memory-mb
 ```
+Also note the maximum percentage of resources setting of capacity scheduler!!! Refer to capacity-scheduler.xml setting in Step 2-6 above.
 
 # 4. Install Spark
 
