@@ -190,3 +190,32 @@ export LIBHDFS_PATH="$HADOOP_PREFIX/lib/native"
 done < <(find "$HADOOP_PREFIX/share/hadoop" -name "*.jar" -print0)
 ```
 10. Mount HDFS by `$HADOOP_PREFIX/sbin/fuse_dfs_wrapper.sh dfs://host:port /mnt/hdfs` as root (be sure to set `$HADOOP_PREFIX` and `$JAVA_HOME` first)
+
+# 8. Running on K8s cluster
+(note: Should use Spark 2.4.5+)
+1. Install minikube (Refer to https://kubernetes.io/docs/tasks/tools/install-minikube/)
+2. Install kubectl (Refer to https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+3. Start a minikube cluster with appropriate CPUs and memory:<br/>
+`minikube start --cpus=4 --memory='8000mb'`
+4. Set docker daemon to be using minikube's:<br/>
+`eval $(minikube -p minikube docker-env)`
+5. Build Spark's docker image:<br/>
+In Spark root directory, `bin/docker-image-tool.sh -m -t testing build`
+6. Put jar file to HDFS:<br/>
+In Spark root directory, `cp examples/jars/spark-examples_2.11-2.4.5.jar /mnt/hdfs/spark/`<br/>
+(HDFS mount should be done first)
+7. Create service account for K8s RBAC permission control:<br/>
+`kubectl create serviceaccount spark`<br/>
+`kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default`
+8. Submit job
+```
+spark-submit --master k8s://https://HOST:PORT \
+    --deploy-mode cluster \
+    --name spark-pi \
+    --class org.apache.spark.examples.SparkPi \
+    --conf spark.executor.instances=3 \
+    --conf spark.kubernetes.container.image=spark:testing \
+    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+    hdfs://192.168.0.103:9000/spark/spark-examples_2.11-2.4.5.jar
+```
+where HOST:POST can be obtained by `kubectl cluster-info`
