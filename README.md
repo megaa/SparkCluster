@@ -214,24 +214,22 @@ spark-submit --master k8s://https://HOST:PORT \
     --deploy-mode cluster \
     --name spark-pi \
     --class org.apache.spark.examples.SparkPi \
-    --conf spark.executor.instances=3 \
+    --conf spark.executor.instances=2 \
     --conf spark.kubernetes.container.image=spark:testing \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
     hdfs://192.168.0.103:9000/spark/spark-examples_2.11-2.4.5.jar
 ```
 where HOST:POST can be obtained by `kubectl cluster-info`
 ## Run SparkStreaming
-(1-7: same as above)
+(1-5,7: same as above)<br/>
+6. Put jar file to HDFS:<br/>
+`cp megaa-spark-test_2.11-1.0.jar /mnt/hdfs/spark/`<br/>
 8. Submit job
 ```
 spark-submit --master k8s://https://HOST:PORT \
     --deploy-mode cluster \
     --name spark-TEPCO \
     --class com.test.O_UDCStreaming \
-    --packages org.apache.spark:spark-streaming-kafka-0-10_2.11:2.4.5 \
-    --jars hdfs://192.168.0.103:9000/spark/postgresql-42.2.5.jar \
-    --conf "spark.driver.extraClassPath=hdfs://192.168.0.103:9000/spark/spark-libs-2.4.5.jar" \
-    --conf "spark.executor.extraClassPath=hdfs://192.168.0.103:9000/spark/spark-libs-2.4.5.jar" \
     --conf spark.executor.instances=2 \
     --conf spark.kubernetes.container.image=spark:testing \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
