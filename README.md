@@ -224,7 +224,7 @@ where HOST:POST can be obtained by `kubectl cluster-info`
 (1-4,7: same as above)<br/>
 5. Build Spark's docker image:<br/>
 Replace `/usr/local/spark/kubernetes/dockerfiles/spark/Dockerfile` first.<br/>
-Then in Spark root directory, `bin/docker-image-tool.sh -m -t testing build`
+Then in Spark root directory, `bin/docker-image-tool.sh -m -t testing build`<br/>
 6. Put jar file to HDFS:<br/>
 `cp megaa-spark-test_2.11-1.0.jar /mnt/hdfs/spark/`<br/>
 8. Submit job
