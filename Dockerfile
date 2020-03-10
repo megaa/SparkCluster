@@ -56,7 +56,7 @@ COPY ${k8s_tests} /opt/spark/tests
 COPY data /opt/spark/data
 #COPY /home/megaa/.ivy2/jars /home/megaa/.ivy2/jars
 COPY jars_m /home/megaa/.ivy2/jars
-COPY conf/log4j.properties /opt/spark/conf/
+COPY conf/log4j.properties /opt/spark/conf/log4j.properties
 
 ENV SPARK_HOME /opt/spark
 
