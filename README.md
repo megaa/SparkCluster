@@ -237,5 +237,6 @@ spark-submit --master k8s://https://HOST:PORT \
     --conf spark.executor.instances=2 \
     --conf spark.kubernetes.container.image=spark:testing \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+    --conf spark.executor.extraJavaOptions=-Dlog4j.configuration=file:///opt/spark/conf/log4j.properties \
     hdfs://192.168.0.103:9000/spark/megaa-spark-test_2.11-1.0.jar
 ```
