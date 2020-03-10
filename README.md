@@ -219,7 +219,7 @@ spark-submit --master k8s://https://HOST:PORT \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
     hdfs://192.168.0.103:9000/spark/spark-examples_2.11-2.4.5.jar
 ```
-where HOST:POST can be obtained by `kubectl cluster-info`
+where HOST:PORT can be obtained by `kubectl cluster-info`
 ## Run SparkStreaming
 (1-4,7: same as above)<br/>
 5. Build Spark's docker image:<br/>
