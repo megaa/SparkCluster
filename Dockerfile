@@ -31,9 +31,12 @@ ARG k8s_tests=kubernetes/tests
 RUN set -ex && \
     apt-get update && \
     ln -s /lib /lib64 && \
-    apt install -y bash tini libc6 libpam-modules libnss3 && \
+    apt install -y bash tini libc6 libpam-modules libnss3 tzdata && \
+    ln -snf /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
+    echo "Asia/Taipei" > /etc/timezone && \
     mkdir -p /opt/spark && \
     mkdir -p /opt/spark/work-dir && \
+    mkdir -p /opt/spark/conf && \
     mkdir -p /home/megaa/.ivy2 && \
     touch /opt/spark/RELEASE && \
     rm /bin/sh && \
@@ -41,6 +44,8 @@ RUN set -ex && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     chgrp root /etc/passwd && chmod ug+rw /etc/passwd && \
     rm -rf /var/cache/apt/*
+
+RUN addgroup --system megaa && adduser --system --home /home/megaa --no-create-home --ingroup megaa megaa
 
 COPY ${spark_jars} /opt/spark/jars
 COPY bin /opt/spark/bin
@@ -51,9 +56,14 @@ COPY ${k8s_tests} /opt/spark/tests
 COPY data /opt/spark/data
 #COPY /home/megaa/.ivy2/jars /home/megaa/.ivy2/jars
 COPY jars_m /home/megaa/.ivy2/jars
+COPY conf/log4j.properties /opt/spark/conf/
 
 ENV SPARK_HOME /opt/spark
 
 WORKDIR /opt/spark/work-dir
+
+RUN chown -R megaa:megaa $SPARK_HOME
+RUN chown -R megaa:megaa /home/megaa
+USER megaa
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
