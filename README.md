@@ -240,3 +240,16 @@ spark-submit --master k8s://https://HOST:PORT \
     --conf spark.executor.extraJavaOptions=-Dlog4j.configuration=file:///opt/spark/conf/log4j.properties \
     hdfs://192.168.0.103:9000/spark/megaa-spark-test_2.11-1.0.jar
 ```
+
+Known issues:
+* After upgrading K8s to v1.17.2 (also tried v1.17.3, v1.18.2, v1.18.3), there will be the following error:
+```
+Exception in thread "main" io.fabric8.kubernetes.client.KubernetesClientException: Operation: [create]  for kind: [Pod]  with name: [null]  in namespace: [default]  failed.
+	at io.fabric8.kubernetes.client.KubernetesClientException.launderThrowable(KubernetesClientException.java:64)
+...
+Caused by: java.net.SocketException: Broken pipe (Write failed)
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+...
+```
+which is caused by incompatible Spark version v.s K8s version. The solution is downgrade K8s to v1.15.3.
+* With K8s v1.15.3, HDFS URL can't be accessed via hostname (ncku-intelligent-energy3) and IP address should be used instead. But with the original K8s version (I don't know it ><, maybe v1.17.0?), there is no such a problem. However, the executor log can now be controlled by the customized log4j configuration, which did not work in the original K8s version.
