@@ -32,8 +32,6 @@ RUN set -ex && \
     apt-get update && \
     ln -s /lib /lib64 && \
     apt install -y bash tini libc6 libpam-modules libnss3 tzdata && \
-    ln -snf /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
-    echo "Asia/Taipei" > /etc/timezone && \
     mkdir -p /opt/spark && \
     mkdir -p /opt/spark/work-dir && \
     mkdir -p /opt/spark/conf && \
