@@ -197,7 +197,7 @@ done < <(find "$HADOOP_PREFIX/share/hadoop" -name "*.jar" -print0)
 1. Install minikube (Refer to https://kubernetes.io/docs/tasks/tools/install-minikube/)
 2. Install kubectl (Refer to https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 3. Start a minikube cluster with appropriate CPUs and memory:<br/>
-`minikube start --cpus=4 --memory='8000mb'`
+`minikube start --kubernetes-version='v1.15.3' --cpus=4 --memory='8000mb'`
 4. Set docker daemon to be using minikube's:<br/>
 `eval $(minikube -p minikube docker-env)`
 5. Build Spark's docker image:<br/>
