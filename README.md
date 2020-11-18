@@ -224,7 +224,10 @@ where HOST:PORT can be obtained by `kubectl cluster-info`
 (1-4,7: same as above)<br/>
 5. Build Spark's docker image:<br/>
 Replace `/usr/local/spark/kubernetes/dockerfiles/spark/Dockerfile` first.<br/>
-Copy `docker-imgtool.sh` to `/usr/local/spark/bin`, and then in Spark root directory,<br/>
+Copy `docker-imgtool.sh` to `/usr/local/spark/bin`.<br/>
+Copy `jars_m/` to `/usr/local/spark`.<br/>
+Copy `log4j.properties` to `/usr/local/spark/conf`.<br/>
+In `/usr/local/spark`,<br/>
 `bin/docker-imgtool.sh -m -t testing build`<br/>
 6. Put jar file to HDFS:<br/>
 `cp megaa-spark-test_2.11-1.0.jar /mnt/hdfs/spark/`<br/>
