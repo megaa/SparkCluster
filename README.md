@@ -96,7 +96,7 @@ bin/hdfs namenode -format
 ```
 
 # 3. Run Hadoop
-On master machine (10.8.0.1.3), `/home/megaa/stuff/hadoop-2.9.2`, run the following
+On master machine (10.8.0.103), `/home/megaa/stuff/hadoop-2.9.2`, run the following
 1. `sbin/start-dfs.sh`
 2. `sbin/start-yarn.sh`
 
