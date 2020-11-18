@@ -21,7 +21,7 @@ export HADOOP_PREFIX
 <configuration>
     <property>
         <name>fs.defaultFS</name>
-        <value>hdfs://192.168.0.103:9000</value>
+        <value>hdfs://10.8.0.103:9000</value>
     </property>
 </configuration>
 ```
@@ -50,7 +50,7 @@ export HADOOP_PREFIX
     <property>
         <description>The hostname of the RM.</description>
         <name>yarn.resourcemanager.hostname</name>
-        <value>192.168.0.103</value>
+        <value>10.8.0.103</value>
     </property>
     <property>
         <name>yarn.nodemanager.aux-services</name>
@@ -77,18 +77,18 @@ export JAVA_HOME="/usr"
 8. Setup passphraseless SSH (refer to http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html), make sure you can ssh to each other without passphrase for all machines
 9. Edit `etc/hadoop/slaves` (only on the master machine):
 ```
-192.168.0.104
-192.168.0.105
+10.8.0.104
+10.8.0.105
 ```
 or
 ```
-192.168.0.103
-192.168.0.104
-192.168.0.105
+10.8.0.103
+10.8.0.104
+10.8.0.105
 ```
 for 3 slaves configuration
 
-10. On master machine (192.168.0.103), `mkdir -p /home/megaa/hadoop/data/namenode`
+10. On master machine (10.8.0.103), `mkdir -p /home/megaa/hadoop/data/namenode`
 11. On slave machines, `mkdir -p /home/megaa/hadoop/data/datanode`
 12. Format the HDFS volume: on master machine, `/home/megaa/stuff/hadoop-2.9.2`, run
 ```
@@ -96,7 +96,7 @@ bin/hdfs namenode -format
 ```
 
 # 3. Run Hadoop
-On master machine (192.168.0.1.3), `/home/megaa/stuff/hadoop-2.9.2`, run the following
+On master machine (10.8.0.1.3), `/home/megaa/stuff/hadoop-2.9.2`, run the following
 1. `sbin/start-dfs.sh`
 2. `sbin/start-yarn.sh`
 
@@ -126,25 +126,25 @@ Also note the maximum percentage of resources setting of capacity scheduler!!! R
 # 5. Configure Spark as standalone cluster
 
 1. Set environment variable `SPARK_SSH_FOREGROUND` to let it explicitly ask for the SSH password
-2. Make sure your hostname is valid (e.g not containing the `_` character), otherwise comment out lines like `192.168.0.107  ncku_intelligent_energy_7` in `/etc/hosts`
+2. Make sure your hostname is valid (e.g not containing the `_` character), otherwise comment out lines like `10.8.0.107  ncku_intelligent_energy_7` in `/etc/hosts`
 
 ## 5.1 Test one master + one slave hosted by the same machine
 1. Make sure there is no file named `slaves` in `/usr/local/spark/conf`
 2. In `/usr/local/spark`, run `sbin/start-all.sh`
-3. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount /usr/local/spark/LICENSE`
+3. In `/usr/local/spark`, run `MASTER=spark://10.8.0.107:7077 ./bin/run-example JavaWordCount /usr/local/spark/LICENSE`
 
 ## 5.2 Test one master by one machine + two slaves by the other two machines
 1. Put the following lines in `/usr/local/spark/conf/slaves`:
 ```
-192.168.0.107
-192.168.0.106
-192.168.0.108
+10.8.0.107
+10.8.0.106
+10.8.0.108
 ```
 2. (same as 5.1.2)
 3. (same as 5.1.3)
-4. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example SparkPi 10000`
+4. In `/usr/local/spark`, run `MASTER=spark://10.8.0.107:7077 ./bin/run-example SparkPi 10000`
    (it will take about 96 seconds to finish)
-5. In `/usr/local/spark`, run `MASTER=spark://192.168.0.107:7077 ./bin/run-example JavaWordCount [FilePath]`
+5. In `/usr/local/spark`, run `MASTER=spark://10.8.0.107:7077 ./bin/run-example JavaWordCount [FilePath]`
    (`FilePath` can be a local file which should exist on all nodes or an HDFS URL)
 
 # 6. Submitting to YARN
@@ -169,8 +169,8 @@ bin/yarn jar share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.9.2.j
 2. Put it to HDFS: `hdfs dfs -put spark-libs-2.4.0.jar /spark`
 3. Set the replication count: `hdfs dfs -setrep -w 2 /spark/spark-libs-2.4.0.jar`
 4. Do 2 & 3 for `py4j-0.10.7-src.zip` and `pyspark.zip`
-5. In `Spark conf/spark-defaults.conf`, add the line `spark.yarn.archive hdfs://192.168.0.103:9000/spark/spark-libs-2.4.0.jar`
-6. When submitting, add the option `--files hdfs://192.168.0.103:9000/spark/pyspark.zip,hdfs://192.168.0.103:9000/spark/py4j-0.10.7-src.zip`
+5. In `Spark conf/spark-defaults.conf`, add the line `spark.yarn.archive hdfs://10.8.0.103:9000/spark/spark-libs-2.4.0.jar`
+6. When submitting, add the option `--files hdfs://10.8.0.103:9000/spark/pyspark.zip,hdfs://10.8.0.103:9000/spark/py4j-0.10.7-src.zip`
 
 # 7. Miscellaneous Items
 
@@ -217,7 +217,7 @@ spark-submit --master k8s://https://HOST:PORT \
     --conf spark.executor.instances=2 \
     --conf spark.kubernetes.container.image=spark:testing \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
-    hdfs://192.168.0.103:9000/spark/spark-examples_2.11-2.4.5.jar
+    hdfs://10.8.0.103:9000/spark/spark-examples_2.11-2.4.5.jar
 ```
 where HOST:PORT can be obtained by `kubectl cluster-info`
 ## Run SparkStreaming
@@ -242,7 +242,7 @@ spark-submit --master k8s://https://HOST:PORT \
     --conf spark.kubernetes.container.image=spark:testing \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
     --conf spark.executor.extraJavaOptions=-Dlog4j.configuration=file:///opt/spark/conf/log4j.properties \
-    hdfs://192.168.0.103:9000/spark/megaa-spark-test_2.11-1.0.jar
+    hdfs://10.8.0.103:9000/spark/megaa-spark-test_2.11-1.0.jar
 ```
 
 Known issues:
