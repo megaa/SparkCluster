@@ -225,6 +225,7 @@ where HOST:PORT can be obtained by `kubectl cluster-info`
 5. Build Spark's docker image:<br/>
 Replace `/usr/local/spark/kubernetes/dockerfiles/spark/Dockerfile` first.<br/>
 Copy `docker-imgtool.sh` to `/usr/local/spark/bin`.<br/>
+Copy the 3 `*.jar` files to `/usr/local/spark/jars`.<br/>
 Copy `jars_m/` to `/usr/local/spark`.<br/>
 Copy `log4j.properties` to `/usr/local/spark/conf`.<br/>
 In `/usr/local/spark`,<br/>
